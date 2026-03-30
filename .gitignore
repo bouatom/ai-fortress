@@ -1,7 +1,6 @@
 # Environment
 .env
-config/keys.json
-config/
+/config/
 
 # Generated docs site
 site/
