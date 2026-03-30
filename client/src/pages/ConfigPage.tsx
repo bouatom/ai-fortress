@@ -128,7 +128,7 @@ export default function ConfigPage() {
             size="small"
             fullWidth
             helperText="Leave blank to keep the existing key"
-            slotProps={{ htmlInput: { autoComplete: 'off' } }}
+            inputProps={{ autoComplete: 'off' }}
           />
 
           <TextField
@@ -140,7 +140,7 @@ export default function ConfigPage() {
             size="small"
             fullWidth
             helperText="Leave blank to keep the existing key"
-            slotProps={{ htmlInput: { autoComplete: 'off' } }}
+            inputProps={{ autoComplete: 'off' }}
           />
 
           <FormControl size="small" fullWidth>
