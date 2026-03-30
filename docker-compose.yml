@@ -24,9 +24,7 @@ services:
     restart: "no"
 
   ai-fortress:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/bouatom/ai-fortress:latest
     container_name: ai-fortress-app
     ports:
       - "${PORT:-3001}:3001"

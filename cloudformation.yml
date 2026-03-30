@@ -165,11 +165,8 @@ Resources:
 
           echo "=== AI Fortress Setup Starting ==="
 
-          # Install git
-          dnf install -y git
-
-          # Install Docker CE via official install script (handles AL2023 correctly)
-          curl -fsSL https://get.docker.com | sh
+          # Install Docker and git
+          dnf install -y docker git
 
           # Start Docker
           systemctl enable docker
@@ -177,6 +174,12 @@ Resources:
 
           # Add ec2-user to docker group
           usermod -aG docker ec2-user
+
+          # Install Docker Compose plugin
+          mkdir -p /usr/local/lib/docker/cli-plugins
+          curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+            -o /usr/local/lib/docker/cli-plugins/docker-compose
+          chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
           # Clone AI Fortress
           git clone https://github.com/bouatom/ai-fortress /opt/ai-fortress
