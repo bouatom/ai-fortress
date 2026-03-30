@@ -24,9 +24,9 @@ Parameters:
 
   InstanceType:
     Type: String
-    Default: t3.xlarge
+    Default: g4dn.xlarge
     AllowedValues: [t3.xlarge, t3.2xlarge, g4dn.xlarge, g4dn.2xlarge]
-    Description: "EC2 instance type. Use g4dn.xlarge for GPU-accelerated Ollama (faster inference)."
+    Description: "EC2 instance type. g4dn.xlarge uses T4 GPU for fast Ollama inference."
 
   LlmProvider:
     Type: String
@@ -42,9 +42,9 @@ Parameters:
 
   OllamaModel:
     Type: String
-    Default: llama3.1
+    Default: mistral
     AllowedValues: [llama3.1, llama3.2, mistral, phi3]
-    Description: "Ollama model to pull (llama3.1 recommended, ~4GB download on first start)"
+    Description: "Ollama model. mistral is faster and less safety-restricted — ideal for attack demos."
 
 Resources:
   DemoVPC:
@@ -168,9 +168,20 @@ Resources:
           # Install Docker and git
           dnf install -y docker git
 
-          # Start Docker
+          # Install NVIDIA drivers (for g4dn GPU instances — skipped harmlessly on CPU instances)
+          dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
+          dnf install -y cuda-drivers || echo "NVIDIA drivers not installed (CPU instance or repo unavailable)"
+
+          # Install NVIDIA Container Toolkit
+          curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo | \
+            tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+          dnf install -y nvidia-container-toolkit || echo "NVIDIA Container Toolkit not installed"
+
+          # Start Docker (after GPU setup so it picks up NVIDIA runtime)
           systemctl enable docker
           systemctl start docker
+          nvidia-ctk runtime configure --runtime=docker --restart || true
+          systemctl restart docker
 
           # Add ec2-user to docker group
           usermod -aG docker ec2-user
