@@ -24,9 +24,9 @@ Parameters:
 
   InstanceType:
     Type: String
-    Default: g4dn.xlarge
+    Default: t3.xlarge
     AllowedValues: [t3.xlarge, t3.2xlarge, g4dn.xlarge, g4dn.2xlarge]
-    Description: "EC2 instance type. g4dn.xlarge uses T4 GPU for fast Ollama inference."
+    Description: "EC2 instance type. t3.xlarge is the default (CPU). Use g4dn.xlarge for GPU if your account has the vCPU limit increased."
 
   LlmProvider:
     Type: String
