@@ -21,7 +21,7 @@
        ▼                              ▼
 ┌──────────────┐            ┌─────────────────────────┐
 │    Ollama    │            │  Trend Vision One API    │
-│  llama3.1   │            │                          │
+│   mistral   │            │                          │
 │  port 11434 │            │  /v3.0/aiSecurity/       │
 │  (local LLM)│            │    applyGuardrails       │
 └──────────────┘            └─────────────────────────┘
@@ -69,7 +69,7 @@ Response returned directly — no scanning
 |---------|-------|---------|
 | `ollama` | `ollama/ollama:latest` | Local LLM server |
 | `ollama-pull` | `ollama/ollama:latest` | One-time model download |
-| `ai-fortress` | Built from `Dockerfile` | Express + React app |
+| `ai-fortress` | `ghcr.io/bouatom/ai-fortress:latest` | Express + React app |
 
 ## Key Design Decisions
 

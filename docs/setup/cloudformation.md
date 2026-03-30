@@ -9,7 +9,7 @@ When you start the AI Fortress experience in PX, the CloudFormation stack is aut
 In the PX sidebar, click the **SSO Login** button under the AWS panel (cloud icon) to open your dedicated AWS console.
 
 !!! tip "Stack Still Provisioning?"
-    The CloudFormation stack status shows in the PX sidebar AWS panel. Wait until it no longer shows "Provisioning Stack!" before proceeding — typically 5-8 minutes after starting the experience.
+    The CloudFormation stack status shows in the PX sidebar AWS panel. Wait until it no longer shows "Provisioning Stack!" before proceeding — typically 8-10 minutes after starting the experience (includes GPU driver installation).
 
 ---
 

@@ -32,7 +32,7 @@ curl http://localhost:11434/api/tags
 
 # Test the model directly
 curl -X POST http://localhost:11434/api/chat \
-  -d '{"model":"llama3.1","messages":[{"role":"user","content":"hi"}],"stream":false}'
+  -d '{"model":"mistral","messages":[{"role":"user","content":"hi"}],"stream":false}'
 ```
 
 **During a demo if it's too slow**: Apologize briefly and pivot to Act 3 (AI Scanner) which has no LLM dependency, then come back.
@@ -67,10 +67,10 @@ Expected: `{"action": "block", ...}`
 
 **Symptom**: Attacks are sent unprotected, but the bot refuses anyway.
 
-**Why**: Ollama models have built-in RLHF safety that sometimes resists attacks.
+**Why**: The default model (mistral) is intentionally less safety-restricted for demo purposes, so this should be rare. If it occurs, the model may have updated its safety training since this was written.
 
 **Talking point during demo**:
-> "Modern LLMs have some built-in safety training, but it's inconsistent and bypassable. AI Scanner finds the bypasses by running thousands of probe variations automatically. Let me show you that in Act 3."
+> "Modern LLMs have some built-in safety training, but it's inconsistent and bypassable — as AI Scanner proves by running thousands of probe variations automatically. Let me show you that in Act 3."
 
 Move on — don't dwell on it.
 
@@ -83,7 +83,7 @@ Move on — don't dwell on it.
 **Fix via SSH**:
 ```bash
 cd /opt/ai-fortress
-docker compose restart ai-fortress
+docker-compose restart ai-fortress
 ```
 
 Wait 10 seconds, then retry.
@@ -116,6 +116,6 @@ cat /opt/ai-fortress/config/keys.json
 3. Find the first `CREATE_FAILED` event — the status reason explains the cause
 
 **Common causes**:
-1. Instance type not available in the provisioned AZ — contact PX support to retry
-2. Service limit on GPU instances — the template defaults to `t3.xlarge` (CPU) which avoids this
+1. GPU instance (`g4dn.xlarge`) not available in the provisioned AZ — contact PX support to retry in a different region
+2. Service limit on GPU instances — re-deploy the stack with `InstanceType` overridden to `t3.xlarge` (CPU fallback, slower inference)
 3. Temporary AWS capacity issue — terminate the PX instance and start a new one

@@ -93,4 +93,4 @@ ai-fortress/
 └── docs/            # This guide
 ```
 
-**LLM**: Ollama (llama3.1 by default, runs on the demo instance). No OpenAI key needed. Only Vision One + TMAS keys are required — entered via the **Settings** page after deployment.
+**LLM**: Ollama with mistral (GPU-accelerated on g4dn.xlarge — fast inference, less RLHF-restricted so demo attacks land). No OpenAI key needed. Only Vision One + TMAS keys are required — entered via the **Settings** page after deployment.
