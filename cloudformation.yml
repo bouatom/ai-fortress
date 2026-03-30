@@ -168,9 +168,8 @@ Resources:
           # Install git
           dnf install -y git
 
-          # Install Docker CE from official repo (includes buildx + compose plugins)
-          dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
-          dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+          # Install Docker CE via official install script (handles AL2023 correctly)
+          curl -fsSL https://get.docker.com | sh
 
           # Start Docker
           systemctl enable docker
