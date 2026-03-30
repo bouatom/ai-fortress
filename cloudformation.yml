@@ -175,11 +175,10 @@ Resources:
           # Add ec2-user to docker group
           usermod -aG docker ec2-user
 
-          # Install Docker Compose plugin
-          mkdir -p /usr/local/lib/docker/cli-plugins
+          # Install Docker Compose as standalone binary
           curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
-            -o /usr/local/lib/docker/cli-plugins/docker-compose
-          chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+            -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
 
           # Clone AI Fortress
           git clone https://github.com/bouatom/ai-fortress /opt/ai-fortress
@@ -197,7 +196,7 @@ Resources:
           ENVEOF
 
           # Start services
-          docker compose up -d
+          docker-compose up -d
 
           # Write key update helper script
           cat > /opt/ai-fortress/update-keys.sh << 'SCRIPTEOF'
@@ -208,7 +207,7 @@ Resources:
           cd /opt/ai-fortress
           sed -i "s|^V1_API_KEY=.*|V1_API_KEY=$1|" .env
           sed -i "s|^TMAS_API_KEY=.*|TMAS_API_KEY=$2|" .env
-          docker compose restart ai-fortress
+          docker-compose restart ai-fortress
           echo "Keys updated and app restarted."
           SCRIPTEOF
           chmod +x /opt/ai-fortress/update-keys.sh
