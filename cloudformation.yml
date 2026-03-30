@@ -1,0 +1,262 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  AI Fortress — Trend Vision One AI Security Demo
+  Deploys a self-contained demo environment with VulnBot, AI Guard, AI Scanner, and TMAS.
+
+Parameters:
+  V1ApiKey:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: "(Optional) Vision One API Key — can be set after deployment using the UpdateKeysCommand output"
+
+  TmasApiKey:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: "(Optional) TMAS Artifact Scanner API Key — can be set after deployment using the UpdateKeysCommand output"
+
+  V1Region:
+    Type: String
+    Default: us-1
+    AllowedValues: [us-1, eu-1, ap-1, jp-1, in-1, au-1, sg-1]
+    Description: "Vision One region"
+
+  InstanceType:
+    Type: String
+    Default: t3.xlarge
+    AllowedValues: [t3.xlarge, t3.2xlarge, g4dn.xlarge, g4dn.2xlarge]
+    Description: "EC2 instance type. Use g4dn.xlarge for GPU-accelerated Ollama (faster inference)."
+
+  LlmProvider:
+    Type: String
+    Default: ollama
+    AllowedValues: [ollama, openai]
+    Description: "LLM provider. Use 'ollama' for local GPU (no extra API key). Use 'openai' for GPT-4o-mini."
+
+  OpenAiApiKey:
+    Type: String
+    Default: ""
+    NoEcho: true
+    Description: "(Optional) OpenAI API key — only required if LlmProvider=openai"
+
+  OllamaModel:
+    Type: String
+    Default: llama3.1
+    AllowedValues: [llama3.1, llama3.2, mistral, phi3]
+    Description: "Ollama model to pull (llama3.1 recommended, ~4GB download on first start)"
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0c02fb55956c7d316  # Amazon Linux 2023
+    us-west-2:
+      AMI: ami-0f3769c8d8429942d
+    eu-west-1:
+      AMI: ami-0905a3c97561e0b69
+    ap-northeast-1:
+      AMI: ami-0d52744d6551d851e
+    ap-southeast-1:
+      AMI: ami-04b6019d38ea93034
+    ap-southeast-2:
+      AMI: ami-08f0bc76ca5236b20
+
+Resources:
+  DemoVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: ai-fortress-vpc
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref DemoVPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+        - Key: Name
+          Value: ai-fortress-public-subnet
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ai-fortress-igw
+
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref DemoVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref DemoVPC
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayAttachment
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref RouteTable
+
+  DemoSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: AI Fortress Demo Security Group
+      VpcId: !Ref DemoVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3001
+          ToPort: 3001
+          CidrIp: 0.0.0.0/0
+          Description: "AI Fortress Demo UI (public)"
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          Description: "SSH"
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: ai-fortress-sg
+
+  DemoInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+
+  DemoInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref DemoInstanceRole
+
+  DemoInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !FindInMap [RegionMap, !Ref AWS::Region, AMI]
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds:
+        - !Ref DemoSG
+      IamInstanceProfile: !Ref DemoInstanceProfile
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 60
+            VolumeType: gp3
+            DeleteOnTermination: true
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          set -e
+          exec > >(tee /var/log/ai-fortress-init.log) 2>&1
+
+          echo "=== AI Fortress Setup Starting ==="
+
+          # Update system
+          dnf update -y
+          dnf install -y docker git curl
+
+          # Start Docker
+          systemctl enable docker
+          systemctl start docker
+
+          # Install Docker Compose v2
+          mkdir -p /usr/local/lib/docker/cli-plugins
+          curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+            -o /usr/local/lib/docker/cli-plugins/docker-compose
+          chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+          # Clone AI Fortress
+          git clone https://github.com/bouatom/ai-fortress /opt/ai-fortress
+          cd /opt/ai-fortress
+
+          # Write .env
+          cat > .env << 'ENVEOF'
+          V1_API_KEY=${V1ApiKey}
+          TMAS_API_KEY=${TmasApiKey}
+          V1_REGION=${V1Region}
+          LLM_PROVIDER=${LlmProvider}
+          OLLAMA_MODEL=${OllamaModel}
+          OPENAI_API_KEY=${OpenAiApiKey}
+          PORT=3001
+          ENVEOF
+
+          # Start services
+          docker compose up -d
+
+          # Write key update helper script
+          cat > /opt/ai-fortress/update-keys.sh << 'SCRIPTEOF'
+          #!/bin/bash
+          # Usage: update-keys.sh <V1_API_KEY> <TMAS_API_KEY>
+          # Updates API keys in .env and restarts the app container.
+          set -e
+          cd /opt/ai-fortress
+          sed -i "s|^V1_API_KEY=.*|V1_API_KEY=$1|" .env
+          sed -i "s|^TMAS_API_KEY=.*|TMAS_API_KEY=$2|" .env
+          docker compose restart ai-fortress
+          echo "Keys updated and app restarted."
+          SCRIPTEOF
+          chmod +x /opt/ai-fortress/update-keys.sh
+
+          echo "=== AI Fortress Setup Complete ==="
+          echo "Demo URL: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):3001"
+
+      Tags:
+        - Key: Name
+          Value: ai-fortress-demo
+        - Key: Purpose
+          Value: TrendVisionOne-SE-Demo
+
+Outputs:
+  DemoURL:
+    Value: !Sub "http://${DemoInstance.PublicIp}:3001"
+    Description: "AI Fortress Demo URL — open in browser after 3-5 minutes for initial model download"
+
+  SSHCommand:
+    Value: !Sub "ssh ec2-user@${DemoInstance.PublicIp}"
+    Description: "SSH access to the demo instance"
+
+  SetupLogs:
+    Value: "tail -f /var/log/ai-fortress-init.log"
+    Description: "SSH in and run this to watch setup progress"
+
+  InstanceId:
+    Value: !Ref DemoInstance
+    Description: "EC2 Instance ID (for SSM Session Manager)"
+
+  UpdateKeysCommand:
+    Value: !Sub |
+      aws ssm send-command \
+        --instance-ids ${DemoInstance} \
+        --document-name AWS-RunShellScript \
+        --region ${AWS::Region} \
+        --parameters 'commands=["/opt/ai-fortress/update-keys.sh YOUR_V1_API_KEY YOUR_TMAS_API_KEY"]'
+    Description: "Run this AWS CLI command to inject API keys after generating them — no SSH required"

@@ -1,0 +1,21 @@
+# Environment
+.env
+config/keys.json
+config/
+
+# Generated docs site
+site/
+
+# Node
+node_modules/
+dist/
+build/
+
+# Claude
+.claude/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
