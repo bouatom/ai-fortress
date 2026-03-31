@@ -2,7 +2,7 @@
 
 **Total time: ~11 minutes**
 
-The AI Fortress demo tells one story in five acts: an AI application that's wide open to attack, then locked down with Vision One — zero code changes.
+The Sentinel AI demo tells one story in five acts: an AI application that's wide open to attack, then locked down with Vision One — zero code changes.
 
 ---
 

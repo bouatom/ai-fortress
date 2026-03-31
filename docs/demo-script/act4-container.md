@@ -14,7 +14,7 @@ Complete the full-stack AI security story. Container → Model → Runtime. Thre
 
 ## Navigate to Container Security
 
-**Click**: "Container Security" in the top navigation bar.
+Still on the **Security Scans** page — scroll down past the divider to the Container Security section.
 
 ---
 

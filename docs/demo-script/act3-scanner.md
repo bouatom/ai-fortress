@@ -12,9 +12,9 @@ Show that AI Scanner would have caught these vulnerabilities *before deployment*
 
 ---
 
-## Navigate to AI Scanner
+## Navigate to Security Scans
 
-**Click**: "AI Scanner" in the top navigation bar.
+**Click**: "Security Scans" in the left sidebar. The AI Scanner section is at the top of the page.
 
 ---
 

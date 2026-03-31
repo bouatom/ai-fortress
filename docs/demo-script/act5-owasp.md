@@ -7,7 +7,7 @@ Leave the prospect with a clear framework. 9/10 OWASP LLM risks covered. The "bi
 
 ## Navigate to OWASP Coverage
 
-**Click**: "OWASP Coverage" in the top navigation bar.
+**Click**: "Coverage" in the left sidebar.
 
 ---
 
