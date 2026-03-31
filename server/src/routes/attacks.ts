@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { ATTACK_LIBRARY, Attack } from '../services/attack-library.js';
-import { callLLM, Message } from '../services/llm-client.js';
+import { callLLM, streamLLM, Message } from '../services/llm-client.js';
 import { checkWithGuard } from '../services/ai-guard.js';
 import { VULNERABLE_SYSTEM_PROMPT } from '../config/system-prompts.js';
 
@@ -43,14 +43,22 @@ router.post(
 
     try {
       if (!isProtected) {
+        // Unprotected path — stream tokens so the attack response appears immediately
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('X-Accel-Buffering', 'no');
+
+        // Send attack metadata first so client knows which attack this is
+        res.write(`data: ${JSON.stringify({ attack })}\n\n`);
+
         const messages: Message[] = [{ role: 'user', content: attack.prompt }];
-        const llmResponse = await callLLM(messages, VULNERABLE_SYSTEM_PROMPT);
-        res.json({
-          attack,
-          response: llmResponse,
-          blocked: false,
-          latencyMs: Date.now() - start,
-        });
+        for await (const token of streamLLM(messages, VULNERABLE_SYSTEM_PROMPT)) {
+          res.write(`data: ${JSON.stringify({ token })}\n\n`);
+        }
+        res.write(
+          `data: ${JSON.stringify({ done: true, blocked: false, latencyMs: Date.now() - start })}\n\n`,
+        );
+        res.end();
         return;
       }
 
@@ -91,7 +99,9 @@ router.post(
       });
     } catch (err) {
       console.error('[attacks] Error:', err);
-      res.status(500).json({ error: 'Attack execution failed' });
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Attack execution failed' });
+      }
     }
   },
 );
