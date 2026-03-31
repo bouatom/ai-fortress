@@ -13,10 +13,10 @@ import { alpha } from '@mui/material/styles';
 import { ScanReport as ScanReportType, ScanFinding } from '../types';
 
 const SEVERITY_COLOR = {
-  critical: { bg: alpha('#fc8181', 0.1), border: '#fc8181', text: '#fc8181' },
-  high: { bg: alpha('#f6ad55', 0.1), border: '#f6ad55', text: '#f6ad55' },
-  medium: { bg: alpha('#faf089', 0.08), border: '#f6e05e', text: '#f6e05e' },
-  low: { bg: alpha('#48bb78', 0.08), border: '#48bb78', text: '#48bb78' },
+  critical: { bg: alpha('#ef4444', 0.1), border: '#ef4444', text: '#ef4444' },
+  high: { bg: alpha('#f59e0b', 0.1), border: '#f59e0b', text: '#f59e0b' },
+  medium: { bg: alpha('#fbbf24', 0.08), border: '#fbbf24', text: '#fbbf24' },
+  low: { bg: alpha('#10b981', 0.08), border: '#10b981', text: '#10b981' },
 };
 
 function FindingCard({ finding }: { finding: ScanFinding }) {
@@ -62,7 +62,7 @@ function FindingCard({ finding }: { finding: ScanFinding }) {
                 flex: 1,
                 height: 4,
                 borderRadius: 2,
-                bgcolor: '#2d2d2d',
+                bgcolor: '#1a1a1a',
                 '& .MuiLinearProgress-bar': { bgcolor: colors.border },
               }}
             />
@@ -78,7 +78,7 @@ function FindingCard({ finding }: { finding: ScanFinding }) {
       </Box>
 
       <Collapse in={expanded}>
-        <Box sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid #2d2d2d' }}>
+        <Box sx={{ mt: 1.5, pt: 1.5, borderTop: '1px solid #1a1a1a' }}>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1 }}>
             {finding.description}
           </Typography>
@@ -126,7 +126,7 @@ export default function ScanReport({ report, isLoading }: ScanReportProps) {
   return (
     <Box>
       {/* Summary */}
-      <Paper elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'error.main', bgcolor: alpha('#fc8181', 0.08), mb: 3 }}>
+      <Paper elevation={0} sx={{ p: 2, border: '1px solid', borderColor: 'error.main', bgcolor: alpha('#ef4444', 0.08), mb: 3 }}>
         <Typography variant="overline" sx={{ color: 'error.main', fontSize: '0.6rem' }}>
           Scan Summary — {report.modelName}
         </Typography>

@@ -51,14 +51,14 @@ export default function ChatWindow({
       <Box
         sx={{
           p: 1.5,
-          borderBottom: '1px solid #2d2d2d',
+          borderBottom: '1px solid #222222',
           display: 'flex',
           alignItems: 'center',
           gap: 1,
         }}
       >
-        <Typography variant="body2" sx={{ fontWeight: 700 }}>
-          🤖 HRBot — Acme Corp
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          HRBot · NovaTech Corp
         </Typography>
         {isProtected && (
           <ShieldIcon sx={{ fontSize: 14, color: 'success.main' }} />
@@ -108,22 +108,22 @@ export default function ChatWindow({
                 p: 1.5,
                 maxWidth: '80%',
                 bgcolor: msg.blocked
-                  ? alpha('#fc8181', 0.1)
+                  ? alpha('#ef4444', 0.1)
                   : msg.role === 'user'
-                  ? alpha('#3182ce', 0.15)
-                  : '#222',
+                  ? alpha('#2563eb', 0.15)
+                  : '#1a1a1a',
                 border: '1px solid',
                 borderColor: msg.blocked
                   ? 'error.main'
                   : msg.role === 'user'
-                  ? alpha('#3182ce', 0.3)
-                  : '#2d2d2d',
+                  ? alpha('#2563eb', 0.3)
+                  : '#222222',
               }}
             >
               {msg.blocked && (
                 <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <Chip
-                    label="🚫 BLOCKED BY AI GUARD"
+                    label="BLOCKED BY AI GUARD"
                     size="small"
                     color="error"
                     sx={{ fontSize: '0.6rem', height: 18, fontWeight: 700 }}
@@ -164,7 +164,7 @@ export default function ChatWindow({
           <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
             <Paper
               elevation={0}
-              sx={{ p: 1.5, bgcolor: '#222', border: '1px solid #2d2d2d' }}
+              sx={{ p: 1.5, bgcolor: '#1a1a1a', border: '1px solid #222222' }}
             >
               <CircularProgress size={16} />
             </Paper>
@@ -175,11 +175,11 @@ export default function ChatWindow({
       </Box>
 
       {/* Input */}
-      <Box sx={{ p: 1.5, borderTop: '1px solid #2d2d2d', display: 'flex', gap: 1 }}>
+      <Box sx={{ p: 1.5, borderTop: '1px solid #222222', display: 'flex', gap: 1 }}>
         <TextField
           fullWidth
           size="small"
-          placeholder="Ask HRBot anything... or use attack buttons"
+          placeholder="Message HRBot..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}

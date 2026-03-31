@@ -16,13 +16,13 @@ export default function GuardOverlay({ guardResult, isProtected }: GuardOverlayP
     return (
       <Paper
         elevation={0}
-        sx={{ p: 2, border: '1px solid #2d2d2d', bgcolor: '#111' }}
+        sx={{ p: 2, border: '1px solid #222222', bgcolor: '#111' }}
       >
         <Typography variant="overline" sx={{ color: 'text.secondary', fontSize: '0.6rem' }}>
           AI Guard
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-          🔇 Disabled — toggle AI Guard to see real-time threat analysis
+          Disabled — toggle AI Guard to see real-time threat analysis
         </Typography>
       </Paper>
     );
@@ -32,13 +32,13 @@ export default function GuardOverlay({ guardResult, isProtected }: GuardOverlayP
     return (
       <Paper
         elevation={0}
-        sx={{ p: 2, border: '1px solid #1a4a2e', bgcolor: alpha('#48bb78', 0.05) }}
+        sx={{ p: 2, border: '1px solid #1a3a2a', bgcolor: alpha('#10b981', 0.05) }}
       >
         <Typography variant="overline" sx={{ color: 'success.main', fontSize: '0.6rem' }}>
           AI Guard Active
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
-          🛡 Monitoring all prompts and responses. Send a message to see guard decisions.
+          Monitoring all prompts and responses. Send a message to see guard decisions.
         </Typography>
       </Paper>
     );
@@ -53,7 +53,7 @@ export default function GuardOverlay({ guardResult, isProtected }: GuardOverlayP
         p: 2,
         border: '1px solid',
         borderColor: isBlocked ? 'error.main' : 'success.main',
-        bgcolor: isBlocked ? alpha('#fc8181', 0.08) : alpha('#48bb78', 0.08),
+        bgcolor: isBlocked ? alpha('#ef4444', 0.08) : alpha('#10b981', 0.08),
         transition: 'all 0.3s ease',
       }}
     >
@@ -70,7 +70,7 @@ export default function GuardOverlay({ guardResult, isProtected }: GuardOverlayP
           fontSize: '0.95rem',
         }}
       >
-        {isBlocked ? '🚫 BLOCKED' : '✅ ALLOWED'}
+        {isBlocked ? 'BLOCKED' : 'ALLOWED'}
       </Typography>
 
       {guardResult.riskScore > 0 && (

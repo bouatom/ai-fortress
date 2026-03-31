@@ -96,11 +96,11 @@ export default function OwaspScorecard() {
       {/* Coverage ring */}
       <Paper
         elevation={0}
-        sx={{ p: 3, mb: 3, textAlign: 'center', border: '1px solid #2d2d2d', bgcolor: '#111' }}
+        sx={{ p: 3, mb: 3, textAlign: 'center', border: '1px solid #222222', bgcolor: '#111' }}
       >
         <Typography
           variant="h1"
-          sx={{ fontWeight: 900, color: 'success.main', fontSize: '5rem', lineHeight: 1 }}
+          sx={{ fontWeight: 700, color: 'success.main', fontSize: '3.5rem', lineHeight: 1 }}
         >
           {protectedCount}/10
         </Typography>
@@ -134,7 +134,7 @@ export default function OwaspScorecard() {
                   p: 2,
                   border: '1px solid',
                   borderColor: isProtected ? 'success.main' : 'warning.main',
-                  bgcolor: isProtected ? alpha('#48bb78', 0.07) : alpha('#f6ad55', 0.07),
+                  bgcolor: isProtected ? alpha('#10b981', 0.07) : alpha('#f59e0b', 0.07),
                   height: '100%',
                 }}
               >

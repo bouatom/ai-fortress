@@ -35,8 +35,8 @@ export default function DemoPage() {
     setIsProtected(value);
     setModeBanner(
       value
-        ? '🛡 AI Guard Activated — All attacks will now be blocked'
-        : '⚠ AI Guard Disabled — Attacks will succeed',
+        ? 'AI Guard Activated — All attacks will now be blocked'
+        : 'AI Guard Disabled — Attacks will succeed',
     );
     setLastGuardResult(null);
     setTimeout(() => setModeBanner(null), 3500);
@@ -131,7 +131,7 @@ export default function DemoPage() {
           sx={{
             mb: 2,
             fontWeight: 700,
-            bgcolor: isProtected ? alpha('#48bb78', 0.15) : alpha('#f6ad55', 0.15),
+            bgcolor: isProtected ? alpha('#10b981', 0.15) : alpha('#f59e0b', 0.15),
           }}
         >
           {modeBanner}
@@ -139,15 +139,22 @@ export default function DemoPage() {
       </Collapse>
 
       {/* Page header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-        <Typography variant="h5" sx={{ fontWeight: 800 }}>
-          VulnBot — HR Assistant
+      <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 0.5 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            VulnBot
+          </Typography>
+          <Chip
+            label={isProtected ? 'AI Guard Active' : 'Unprotected'}
+            color={isProtected ? 'success' : 'error'}
+            size="small"
+            variant="outlined"
+            sx={{ fontWeight: 600 }}
+          />
+        </Box>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          NovaTech Corp HR Assistant · Powered by Sentinel AI
         </Typography>
-        <Chip
-          label={isProtected ? '🛡 AI GUARD ACTIVE' : '⚠ UNPROTECTED'}
-          color={isProtected ? 'success' : 'error'}
-          sx={{ fontWeight: 800 }}
-        />
       </Box>
 
       <Grid container spacing={2}>
@@ -164,7 +171,7 @@ export default function DemoPage() {
         <Grid item xs={12} md={8}>
           <Paper
             elevation={0}
-            sx={{ border: '1px solid #2d2d2d', bgcolor: 'background.paper', height: '100%' }}
+            sx={{ border: '1px solid #222222', bgcolor: 'background.paper', height: '100%' }}
           >
             <ChatWindow
               messages={messages}

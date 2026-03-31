@@ -25,10 +25,10 @@ export default function AttackPanel({ attacks, onAttack, isLoading }: AttackPane
   return (
     <Paper
       elevation={0}
-      sx={{ p: 2, border: '1px solid #2d2d2d', bgcolor: 'background.paper' }}
+      sx={{ p: 2, border: '1px solid #222222', bgcolor: 'background.paper' }}
     >
-      <Typography variant="overline" sx={{ color: 'error.main', fontSize: '0.6rem', display: 'block', mb: 1 }}>
-        ⚔ Attack Library — One-Click OWASP Attacks
+      <Typography variant="overline" sx={{ color: 'text.secondary', display: 'block', mb: 1.5 }}>
+        Attack Library — One-Click OWASP Attacks
       </Typography>
 
       <Grid container spacing={1}>
@@ -40,15 +40,16 @@ export default function AttackPanel({ attacks, onAttack, isLoading }: AttackPane
               disabled={isLoading}
               onClick={() => onAttack(attack.id)}
               sx={{
-                borderColor: '#4a1a1a',
-                color: '#fc8181',
-                bgcolor: '#1a0a0a',
+                borderColor: '#222222',
+                color: '#888888',
+                bgcolor: '#0f0f0f',
                 flexDirection: 'column',
                 py: 1.5,
                 gap: 0.5,
                 '&:hover': {
-                  borderColor: 'error.main',
-                  bgcolor: '#2d1010',
+                  borderColor: '#2563eb',
+                  color: '#f0f0f0',
+                  bgcolor: '#0f0f0f',
                 },
                 '&:disabled': {
                   opacity: 0.5,
@@ -65,8 +66,8 @@ export default function AttackPanel({ attacks, onAttack, isLoading }: AttackPane
                 label={attack.owaspRisk.replace('OWASP ', '')}
                 size="small"
                 sx={{
-                  bgcolor: '#3d1515',
-                  color: '#fc8181',
+                  bgcolor: '#161b2e',
+                  color: '#60a5fa',
                   fontSize: '0.55rem',
                   height: 16,
                 }}

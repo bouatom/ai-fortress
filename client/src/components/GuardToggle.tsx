@@ -18,8 +18,8 @@ export default function GuardToggle({ isProtected, onChange }: GuardToggleProps)
         border: '1px solid',
         borderColor: isProtected ? 'success.main' : 'error.main',
         bgcolor: isProtected
-          ? alpha('#48bb78', 0.08)
-          : alpha('#fc8181', 0.08),
+          ? alpha('#10b981', 0.08)
+          : alpha('#ef4444', 0.08),
         transition: 'all 0.4s ease',
         cursor: 'pointer',
       }}
@@ -39,7 +39,7 @@ export default function GuardToggle({ isProtected, onChange }: GuardToggleProps)
               lineHeight: 1.2,
             }}
           >
-            {isProtected ? '🛡 AI Guard ACTIVE' : '💀 AI Guard OFF'}
+            {isProtected ? 'AI Guard Active' : 'AI Guard Off'}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {isProtected
